@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/style.css">
+    <title>Admin</title>
+</head>
+
+<body>
+    <header class="header" id="header">
+        <section class="logo_header">
+            <a href="index.html">
+                <h1>Eco Market</h1>
+            </a>
+        </section>
+        <nav class="nagivation_header" id="nav">
+            <a href="#products">Produtos</a>
+            <a href="#review">Avaliações</a>
+            <a href="#education">Educação</a>
+            <a href="login.html">Login</a>
+            <a href="carrinho.html"><i class="fa-solid fa-cart-shopping"></i></a><a href="admin.html"
+                class="menu-item">Admin</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1 class="product-title-page">Administração</h1>
+        <div class="formulario-admin">
+            <form id="admin-form" class="form">
+                <div class="input-control">
+                    <label for="name" class="input-label" hidden>Nome</label>
+                    <input type="text" name="name" id="name" class="input-field" placeholder="Nome" required>
+                </div>
+                <div class="input-control">
+                    <label for="email" class="input-label" hidden>Email</label>
+                    <input type="email" name="email" id="email" class="input-field" placeholder="Email" required>
+                </div>
+                <div class="input-control text-center">
+                    <button type="submit" class="input-submit w-100">Cadastrar</button>
+                    <button type="button" class="input-submit w-100" onclick="limpaCampodoUsuario()">Limpar</button>
+                    <button class="input-submit w-100" onclick="abreModal()">Ver Cadastros</button>
+                </div>
+            </form>
+
+
+
+            <div id="userModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="fechaModal()">&times;</span>
+                    <h2>Usuários Cadastrados</h2>
+                    <input type="text" id="search-modal" placeholder="Buscar..." onkeyup="pesquisaInformacoesdoUsuario()">
+                    <ul id="modalUserList"></ul>
+                    <ul id="data-list"></ul>
+                    <button id="deletaInformacoesdeTodososUsuarioBtn" onclick="deletaInformacoesdeTodososUsuario()">Limpar Todos os Usuários</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <section id="footer_content" class="footer_content">
+            <section id="footer_contacts">
+                <h2>Eco Market</h2>
+                <p>Sua escolha mais sustentável.</p>
+                <section id="footer_social_media">
+                    <a href="#" class="footer-link" id="instagram">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="#" class="footer-link" id="facebook">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="footer-link" id="whatsapp">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </a>
+                </section>
+            </section>
+            <section id="footer_products">
+                <ul class="footer-list">
+                    <li>
+                        <h3>Produtos</h3>
+                    </li>
+                    <li>
+                        <a href="verduras.html" class="footer-link">Verduras</a>
+                    </li>
+                    <li>
+                        <a href="legumes.html" class="footer-link">Legumes</a>
+                    </li>
+                    <li>
+                        <a href="condimentos.html" class="footer-link">Condimentos</a>
+                    </li>
+                    <li>
+                        <a href="frutas.html" class="footer-link">Frutas</a>
+                    </li>
+                    <li>
+                        <a href="extras.html" class="footer-link">Extras</a>
+                    </li>
+                </ul>
+            </section>
+            <section id="footer_info">
+                <ul class="footer-list">
+                    <li>
+                        <h3>Saiba mais</h3>
+                    </li>
+                    <li>
+                        <a href="#review" class="footer-link">Avaliações</a>
+                    </li>
+                    <li>
+                        <a href="#education" class="footer-link">Educação</a>
+                    </li>
+                </ul>
+            </section>
+            <section id="footer_subscribe">
+                <h3>Inscrever-se</h3>
+                <p>
+                    Insira seu e-mail para receber notificações sobre nossas novas soluções.
+                </p>
+                <section id="input_group">
+                    <input type="email" id="email">
+                    <button>
+                        <i class="fa-regular fa-envelope"></i>
+                    </button>
+                </section>
+            </section>
+        </section>
+        <section id="footer_copyright">
+            &#169
+            2024 all rights reserved.
+        </section>
+    </footer>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="assets/js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            carregaInformacoesdoUsuario();
+            document.getElementById('admin-form').addEventListener('submit', adicionaUsuario);
+        });
+
+        function adicionaUsuario(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+
+            const newData = { id: Date.now(), date: new Date().toLocaleString(), name, email };
+
+            let dataList = JSON.parse(localStorage.getItem('adminDataList')) || [];
+            dataList.push(newData);
+
+            localStorage.setItem('adminDataList', JSON.stringify(dataList));
+            exibeInformacoesdoUsuario(dataList);
+
+            limpaCampodoUsuario();
+        }
+
+        function carregaInformacoesdoUsuario() {
+            let dataList = JSON.parse(localStorage.getItem('adminDataList')) || [];
+            exibeInformacoesdoUsuario(dataList);
+        }
+
+        function exibeInformacoesdoUsuario(dataList) {
+            const dataListContainer = document.getElementById('data-list');
+            dataListContainer.innerHTML = '';
+
+            dataList.forEach((data, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `${data.date} - ${data.name} - ${data.email} 
+                                <button onclick="deletaInformacoesdoUsuario(${index})">Excluir</button>`;
+                dataListContainer.appendChild(li);
+            });
+        }
+
+        function deletaInformacoesdoUsuario(index) {
+            let dataList = JSON.parse(localStorage.getItem('adminDataList')) || [];
+            dataList.splice(index, 1);
+
+            localStorage.setItem('adminDataList', JSON.stringify(dataList));
+            exibeInformacoesdoUsuario(dataList);
+        }
+
+        function deletaInformacoesdeTodososUsuario() {
+            localStorage.removeItem('adminDataList');
+            exibeInformacoesdoUsuario([]);
+        }
+
+        function pesquisaInformacoesdoUsuario() {
+            const searchValue = document.getElementById('search-modal').value.toLowerCase();
+            let dataList = JSON.parse(localStorage.getItem('adminDataList')) || [];
+
+            const filteredDataList = dataList.filter(data => data.name.toLowerCase().includes(searchValue) || data.email.toLowerCase().includes(searchValue));
+            exibeInformacoesdoUsuario(filteredDataList);
+        }
+
+        function limpaCampodoUsuario() {
+            document.getElementById('admin-form').reset();
+        }
+
+        function abreModal() {
+            document.getElementById('userModal').style.display = 'flex';
+            carregaInformacoesdoUsuario();
+        }
+
+        function fechaModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>
